@@ -53,7 +53,7 @@ class PluginBase(metaclass=abc.ABCMeta):
 
 class TextNormalization(PluginBase):
     """
-    文本规范化插件
+    文本规范化插件,尽量不改动原有文本
     - 1. 全角转半角
     - 2. 大写字母转为小写字母
     - 3. 转为简体
@@ -64,11 +64,53 @@ class TextNormalization(PluginBase):
         super().__init__()
 
     def handler(self, input_data):
-        text = text_normalize.full_to_half(input_data)
+        text = text_normalize.full2half(input_data)
         text = text_normalize.upper2lower(text)
         text = text_normalize.traditional2simplified(text)
         print(text)
 
+        return text
+
+
+class TextClean(PluginBase):
+    """
+    文本清洗插件
+    - 表情过滤
+    """
+
+    def __init__(self) -> None:
+        self.name = 'text_clean'
+        super().__init__()
+
+    def handler(self, input_data):
+        return text
+
+
+class TextSegment(PluginBase):
+    """
+    文本分词插件
+    -
+    """
+
+    def __init__(self) -> None:
+        self.name = 'text_segment'
+        super().__init__()
+
+    def handler(self, input_data):
+        return text
+
+
+class TextTokenizer(PluginBase):
+    """
+    文本分词插件
+    -
+    """
+
+    def __init__(self) -> None:
+        self.name = 'text_tokenizer'
+        super().__init__()
+
+    def handler(self, input_data):
         return text
 
 
@@ -77,8 +119,11 @@ Pluginmanager = PluginManager()
 
 if __name__ == '__main__':
     text_normal = TextNormalization()
-    text_normal.handler('我是中国人Chinese，我爱我的祖国！')
+    text_segment = TextSegment()
+    text_tokenizer = TextTokenizer()
     Pluginmanager.register([text_normal])
+    Pluginmanager.register([text_segment])
+    Pluginmanager.register([text_tokenizer])
     Pluginmanager.get('text_normal').handler(input_data='我是中国人Chinese，我爱我的祖国！')
 
     pass

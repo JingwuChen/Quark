@@ -8,10 +8,10 @@
 import zhconv
 
 
-def full_to_half(sentence: str) -> str:
+def full2half(text: str) -> str:
     # 全角转半角
     change_sentence = ""
-    for word in sentence:
+    for word in text:
         inside_code = ord(word)
         if inside_code == 12288:  # 全角空格直接转换
             inside_code = 32
@@ -34,10 +34,10 @@ def traditional2simplified(sentence: str) -> str:
 
 
 if __name__ == '__main__':
-    text = '我是中国人Chinese，我爱我的祖国！'
+    text = '我是中国 人Chinese，我爱我的祖国！'
     # text_normalize = TextNormalize()
     # final = text_normalize.normalize_utf8(text)
-    final = full_to_half(text)
+    final = full2half(text)
     print(final)
     final = upper2lower(text)
     print(final)
