@@ -1,34 +1,33 @@
-# UniNLP
-a universal nlp service
+#**train framework - quark** 
+---
+This project is under development and we need developers to participate in.
+# Join us
+If you
+- familiar with xgb lightgbm 
+- familiar with and interested in finance, rec, nlp and cv 
+- familiar with tensorflow 
+- have spare time to learn and develop
+- familiar with git
+
+please send a brief introduction of your background and experience to 
+- merlinzhu@lexin.com
+- oliverchen@lexin.com
+- guidohuang@lexin.com
+- xudonghuang@lexin.com
+
+welcome to join us!
+
+---
+## 核心
+- 将传统的训练过程，抽离出核心任务节点，基于这个任务节点构建DAG图，并最终以业务为核心构建业务DAG图，因此需要了解训练组件中的层级关系，分别为：
+- 底层-算法原子性单元和原子插件，该部分为算法核心人员开发
+- 中层-任务节点（DAG中的每个node），该部分为业务算法工程师进行开发，每开发一个节点并测试成功后，需进行注册， 方便共享并用于构图
+- 上层-实验（DAG图）, 该部分为业务方进行构建符合自己业务场景的图并进行训练实验，每构建一个图必须进行注册，方便共享并管理
+- 
+---
+## 非开发者使用操作流程
+（待完善）
+## 开发者使用操作流程
+（待完善）
 
 
-# 结构
-.
-├── code
-│   ├── models            底层核心模型逻辑，所有涉及模型的必须在这里实现
-│   │   ├── cores         核心模型，以模型名作为独立文件，如： dssm.py
-│   │   ├── layers        模型核心组成构建，以layer名为文件名，务必做到正交性
-│   │   ├── src           模型调用统一出口，所有的模型务必在这里进行注册，方可被外界调用
-│   │   ├── test          每一个模型的完成，请务必给出对应的测试代码
-│   │   └── utils         通用的函数请都放到这里，后续进行代码整理时，需要对这些函数进行归类分拆
-│   ├── plugins           插件注册接口，为服务提供
-│   │   ├── common        插件的通用函数方法都放到这里
-│   │   ├── src           核心插件注册抽象
-│   │   └── test          插件测试代码
-│   └── tools             工具类
-│       ├── common        包含现有工具和自定义工具，请对所有的已有工具进行二次封装成类的方式
-│       └── utils         工具的通用函数
-├── docs                  每个模型和每个工具的文档说明
-├── LICENSE              
-├── README.md          
-├── server                服务封装
-│   ├── config            配置化
-│   ├── lib               核心封装库
-│   └── main              对外提供服务
-└── test                  整体项目对外测试案例
-
-# 代码规范
-1. 功能模型 以函数式为主， 如： 对 给出当前时间；获取句子长度；获得指定长度的句子
-2. 具有不同功能模块调用和功能集合的主体，以类为主， 如：分词功能，它包含N种分词函数，
-3. 模型和layer 编写遵循tf2的kearas.layer 形式
-4. 服务务必配置和插件化实现
