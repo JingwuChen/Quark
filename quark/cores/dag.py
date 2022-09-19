@@ -26,7 +26,6 @@ Output = Union[tf.data.Dataset, list[Optional[float], Optional[int]]]  # pytype:
 class TFRcordFileInputer(AbstractInputer):
     ...
     ...
-
 """
 
 
@@ -34,8 +33,8 @@ class AbstractInputer(metaclass=abc.ABCMeta):
     """An abstract class defining the API required for Inputer."""
 
     @abc.abstractmethod
-    def read(self, dtype: str) -> Optional[Output]:
-        """Implements `num_steps` steps of Inputer."""
+    def read(self) -> Optional[Output]:
+        """Implements `dtype` of Inputer."""
         pass
 
 

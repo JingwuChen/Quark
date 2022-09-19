@@ -5,14 +5,29 @@ from __future__ import absolute_import, division, print_function
 """Common configuration settings."""
 
 import dataclasses
-from typing import Optional, Sequence, Union
+from typing import Optional, Union, List
+
+
+@dataclasses.dataclass
+class FeatuerConfig():
+    name: str = None
+    dtype: int = 0
+    len: int = None
+    value_dtype: int = None
 
 
 @dataclasses.dataclass
 class DataConfig():
-    input_path: Union[Sequence[str], str] = ""
-    tfds_name: str = ""
-    tfds_split: str = ""
+    # inputer basic config
+    tfds_name: str = None
+    mode: str = None
+    files: Union[List[str], str] = None
+    compression_type: str = None
+    buffer_size: int = 100
+    num_parallel_reads: int = None
+    feature_config: List[FeatuerConfig] = None
+    textline_split: str = None
+    # processor basic config
     global_batch_size: int = 0
     is_training: bool = None
     drop_remainder: bool = True
@@ -25,9 +40,6 @@ class DataConfig():
     enable_tf_data_service: bool = False
     tf_data_service_address: Optional[str] = None
     tf_data_service_job_name: Optional[str] = None
-    tfds_data_dir: str = ""
-    tfds_as_supervised: bool = False
-    tfds_skip_decoding_feature: str = ""
     seed: Optional[int] = None
 
 

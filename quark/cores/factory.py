@@ -18,7 +18,7 @@ def register_data_cls(data_config_cls):
 
 # 通过注册的名字取出你的 DataConfig和Class 配置信息
 def get_data_cls(data_config_cls):
-    return registry.lookup(_REGISTERED_DATA_CLS)(data_config_cls)
+    return registry.lookup(_REGISTERED_DATA_CLS, data_config_cls)
 
 
 # 对于基于配置文件产生的 TaskConfig和Class 注册到这
