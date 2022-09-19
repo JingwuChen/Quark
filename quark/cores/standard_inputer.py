@@ -2,6 +2,7 @@
 # @Author : Zip
 # @Moto   : Knowledge comes from decomposition
 from __future__ import absolute_import, division, print_function
+
 """A standard inputer to access data config."""
 from quark.cores import factory
 from quark.cores import AbstractInputer
