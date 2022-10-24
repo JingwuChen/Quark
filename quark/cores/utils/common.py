@@ -4,6 +4,7 @@
 from __future__ import absolute_import, division, print_function
 import os
 import random
+from absl import logging
 
 
 # 获得随机值
@@ -32,5 +33,11 @@ def get_files_from_dir(files):
             if os.access(tmp, os.F_OK) and os.access(tmp, os.R_OK):
                 files_list.append(tmp)
             else:
-                print('%s is not exist or not read' % tmp)
+                logging.info(f'\n{tmp}is not exist or not read\n')
         return files_list
+
+
+# 文件不存在就创建文件
+def dir_is_exist_create(dir):
+    if not os.path.exists(dir):
+        os.mkdir(dir)

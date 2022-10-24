@@ -2,7 +2,7 @@
 # @Author : Zip
 # @Moto   : Knowledge comes from decomposition
 from __future__ import absolute_import, division, print_function
-"""A global DAG to access data config."""
+"""A global DAG."""
 # 整个数据图里，我们包含两个大的步骤
 # 0. 原始数据
 # 1. 数据导入
@@ -33,7 +33,7 @@ class AbstractInputer(metaclass=abc.ABCMeta):
     """An abstract class defining the API required for Inputer."""
 
     @abc.abstractmethod
-    def read(self) -> Optional[Output]:
+    def handler(self) -> Optional[Output]:
         """Implements `dtype` of Inputer."""
         pass
 
@@ -62,24 +62,24 @@ class AbstractEnvironment(metaclass=abc.ABCMeta):
     """An abstract class defining the API required for Env."""
 
     @abc.abstractmethod
-    def initialize(self):
+    def handler(self):
         pass
 
 
-class AbstractTrainer(tf.Module, metaclass=abc.ABCMeta):
+class AbstractTrainer(metaclass=abc.ABCMeta):
     """An abstract class defining the API required for training."""
 
     @abc.abstractmethod
-    def train(self, num_steps: tf.Tensor) -> Optional[Output]:
+    def handler(self) -> Optional[Output]:
         """Implements `num_steps` steps of training."""
         pass
 
 
-class AbstractEvaluator(tf.Module, metaclass=abc.ABCMeta):
+class AbstractEvaluator(metaclass=abc.ABCMeta):
     """An abstract class defining the API required for evaluation."""
 
     @abc.abstractmethod
-    def evaluate(self, num_steps: tf.Tensor) -> Optional[Output]:
+    def handler(self) -> Optional[Output]:
         """Implements `num_steps` steps of evaluation."""
         pass
 
@@ -88,6 +88,14 @@ class AbstractSaveModel(metaclass=abc.ABCMeta):
     """An abstract class defining the API required for SaveModel."""
 
     @abc.abstractmethod
-    def save(self, dtype: str) -> Optional[Output]:
+    def handler(self) -> Optional[Output]:
         """Implements `dtype` dtype of save."""
+        pass
+
+
+class AbstractModel(metaclass=abc.ABCMeta):
+    """An abstract class defining the API required for Model."""
+
+    @abc.abstractmethod
+    def handler(self) -> Optional[Output]:
         pass

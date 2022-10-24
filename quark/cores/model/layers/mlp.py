@@ -3,16 +3,11 @@
 # @Moto   : Knowledge comes from decomposition
 from __future__ import absolute_import, division, print_function
 
-from tensorflow.python.keras.engine.base_layer import Layer
-from tensorflow.python.keras import activations, initializers, regularizers, constraints
 from tensorflow.python.framework import tensor_shape
-from tensorflow.python.ops.math_ops import MatMul
-from tensorflow.python.ops.nn_ops import BiasAdd
-from tensorflow.python.keras.layers import Dropout
 import tensorflow as tf
 
 
-class MLP(Layer):
+class MLP(tf.keras.layers.Layer):
 
     def __init__(self,
                  units,
@@ -36,16 +31,16 @@ class MLP(Layer):
             raise ValueError(
                 f'Received an invalid value for `units`, expected '
                 f'a positive integer, got {units}.')
-        self.activation = activations.get(activation)
+        self.activation = tf.keras.activations.get(activation)
         self.use_bias = use_bias
         self.is_batch_norm = is_batch_norm
         self.is_dropout = is_dropout
-        self.kernel_initializer = initializers.get(kernel_initializer)
-        self.bias_initializer = initializers.get(bias_initializer)
-        self.kernel_regularizer = regularizers.get(kernel_regularizer)
-        self.bias_regularizer = regularizers.get(bias_regularizer)
-        self.kernel_constraint = constraints.get(kernel_constraint)
-        self.bias_constraint = constraints.get(bias_constraint)
+        self.kernel_initializer = tf.keras.initializers.get(kernel_initializer)
+        self.bias_initializer = tf.keras.initializers.get(bias_initializer)
+        self.kernel_regularizer = tf.keras.regularizers.get(kernel_regularizer)
+        self.bias_regularizer = tf.keras.regularizers.get(bias_regularizer)
+        self.kernel_constraint = tf.keras.constraints.get(kernel_constraint)
+        self.bias_constraint = tf.keras.constraints.get(bias_constraint)
 
     def build(self, input_shape):
         input_shape = tensor_shape.TensorShape(input_shape)
@@ -86,9 +81,9 @@ class MLP(Layer):
     def call(self, inputs, is_train=False):
         _input = inputs
         for i in range(len(self.units)):
-            _input = MatMul(a=_input, b=self.kernels[i])
+            _input = tf.linalg.matmul(a=_input, b=self.kernels[i])
             if self.use_bias:
-                _input = BiasAdd(value=_input, bias=self.biases[i])
+                _input = tf.nn.bias_add(value=_input, bias=self.biases[i])
             # BN
             if self.is_batch_norm:
                 _input = self.bns[i](_input)
@@ -97,7 +92,7 @@ class MLP(Layer):
                 _input = self.activation(_input)
             # DROP
             if is_train and self.is_dropout > 0:
-                _input = Dropout(self.is_dropout)(_input)
+                _input = tf.keras.layers.Dropout(self.is_dropout)(_input)
 
         return _input
 
@@ -107,7 +102,7 @@ class MLP(Layer):
             'units':
             self.units,
             'activation':
-            activations.serialize(self.activation),
+            tf.keras.activations.serialize(self.activation),
             'use_bias':
             self.use_bias,
             'is_batch_norm':
@@ -115,18 +110,18 @@ class MLP(Layer):
             'is_dropout':
             self.is_dropout,
             'kernel_initializer':
-            initializers.serialize(self.kernel_initializer),
+            tf.keras.initializers.serialize(self.kernel_initializer),
             'bias_initializer':
-            initializers.serialize(self.bias_initializer),
+            tf.keras.initializers.serialize(self.bias_initializer),
             'kernel_regularizer':
-            regularizers.serialize(self.kernel_regularizer),
+            tf.keras.regularizers.serialize(self.kernel_regularizer),
             'bias_regularizer':
-            regularizers.serialize(self.bias_regularizer),
+            tf.keras.regularizers.serialize(self.bias_regularizer),
             'activity_regularizer':
-            regularizers.serialize(self.activity_regularizer),
+            tf.keras.regularizers.serialize(self.activity_regularizer),
             'kernel_constraint':
-            constraints.serialize(self.kernel_constraint),
+            tf.keras.constraints.serialize(self.kernel_constraint),
             'bias_constraint':
-            constraints.serialize(self.bias_constraint)
+            tf.keras.constraints.serialize(self.bias_constraint)
         })
         return config

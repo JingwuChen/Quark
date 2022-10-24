@@ -1,0 +1,151 @@
+task_dag:
+  - node_name: train_input
+    node_dtype: StandardInputer
+    node_input: start
+    node_config:
+      conf_name: si01
+      mode: tfrecord
+      files: ../data/mini_news.train.tfrecord
+      buffer_size: 100
+      num_parallel_reads: 2
+      field_config:
+        - conf_name: user
+          name: user
+          dtype: 0
+          len: 1
+          value_dtype: 3
+        - conf_name: item
+          name: item
+          dtype: 0
+          len: 1
+          value_dtype: 3
+        - conf_name: ctr
+          name: ctr
+          dtype: 1
+          len: 1
+          value_dtype: 1
+  - node_name: val_input
+    node_dtype: StandardInputer
+    node_input: start
+    node_config:
+      conf_name: si02
+      mode: tfrecord
+      files: ../data/mini_news.test.tfrecord
+      buffer_size: 100
+      num_parallel_reads: 2
+      field_config:
+        - conf_name: user
+          reuse: true
+        - conf_name: item
+          reuse: true
+        - conf_name: ctr
+          reuse: true
+  - node_name: train_data_processor
+    node_dtype: StandardProcessor
+    node_input: train_input
+    node_config:
+      conf_name: sp01
+      global_batch_size: 16
+      field_config:
+        - conf_name: user
+          plugins:
+        - conf_name: item
+          plugins:
+        - conf_name: ctr
+          plugins:
+  - node_name: val_data_processor
+    node_dtype: StandardProcessor
+    node_input: val_input
+    node_config:
+      conf_name: sp01
+      reuse: true
+  - node_name: train_data_print
+    node_dtype: PrintDataSet
+    node_input: train_data_processor
+    node_config:
+      conf_name: pd01
+      read_num: 2
+  - node_name: val_data_print
+    node_dtype: PrintDataSet
+    node_input: val_data_processor
+    node_config:
+      conf_name: pd01
+      reuse: true
+  - node_name: train
+    node_dtype: StandardTrainer
+    node_input: train_data_print,val_data_print
+    node_config:
+      conf_name: st01
+      mode: train_and_eval
+      interval_pre_step: 500
+      checkpoint_dir: ./checkpoint
+      max_to_keep: 2
+      label_config:
+        - conf_name: stl01
+          name: ctr
+          loss_config: 
+            conf_name: bce01
+            method: bce
+          metric_config: 
+            conf_name: auc01
+            method: auc
+      model_dag_name: mcf
+      optimizer_config:
+        conf_name: adam01
+        method: adam
+        learning_rate: 0.01
+  - node_name: eval
+    node_dtype: StandardEvaluator
+    node_input: val_data_print,train
+    node_config:
+      conf_name: es01
+      interval_pre_step: 500
+      checkpoint_dir: ./checkpoint
+      label_config:
+        - conf_name: stl02
+          name: ctr
+          loss_config: 
+            conf_name: bce01
+            reuse: true
+          metric_config: 
+            conf_name: auc01
+            reuse: true
+      model_dag_name: mcf
+  - node_name: savemodel
+    node_dtype: StandardSaveModel
+    node_input: eval
+    node_config:
+      conf_name: sm01
+      checkpoint_dir: ./checkpoint
+      model_dag_name: mcf
+      base_dir: ./savemodel
+
+model_dag:
+  - node_name: user
+    node_dtype: input
+    dag_is_input: true
+    node_input: start
+    node_config:
+      feature_name: user
+      reuse: true
+  - node_name: item
+    node_dtype: input
+    dag_is_input: true
+    node_input: start
+    node_config:
+      feature_name: item
+      reuse: true
+  - node_name: embed01
+    node_dtype: embed
+    node_input: user,item
+    node_config:
+      feature_size: 40000
+      embedding_size: 16
+  - node_name: ctr
+    node_dtype: product
+    dag_is_output: true
+    node_input: embed01
+    node_config:
+
+runtime:
+  

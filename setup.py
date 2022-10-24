@@ -7,7 +7,7 @@ import setuptools
 with open("README.md", "r", encoding='utf8') as fh:
     long_description = fh.read()
 
-REQUIRED_PACKAGES = ['h5py==2.10.0', 'requests']
+REQUIRED_PACKAGES = ['tensorflow==2.9.0', 'requests']
 
 setuptools.setup(
     name="quark",
@@ -19,7 +19,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="None",
     packages=setuptools.find_packages(exclude=["tests", "doc", "example"]),
-    python_requires=">=3.6",  # '>=3.4',  # 3.4.6
+    python_requires=">=3.7",
     install_requires=REQUIRED_PACKAGES,
     extras_require={
         "cpu": ["tensorflow>=2.9.0"],
@@ -28,7 +28,7 @@ setuptools.setup(
     entry_points={},
     classifiers=(
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Scientific/Engineering',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ),

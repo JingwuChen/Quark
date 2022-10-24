@@ -2,49 +2,276 @@
 # @Author : Zip
 # @Moto   : Knowledge comes from decomposition
 from __future__ import absolute_import, division, print_function
+from calendar import c
 
-from tensorflow.python.keras import metrics
+from quark.cores import factory
 import tensorflow as tf
+from quark.cores import MetricOptions
 
 
-class Metrics():
+@factory.register_metrics_cls("auc")
+class AUCMetrics:
 
-    def __init__(self, method, **args):
-        self.method = method
-        self.threshold = args.get("threshold", 0.5)
-        self.topk = args.get("topk", 5)
-        self.name = args.get("name", "M1")
-        self.dtype = args.get("dtype", tf.float32)
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _from_logits = conf.from_logits
+        _thresholds = conf.thresholds
+        self.metrics = tf.keras.metrics.AUC(name=f"{_conf_name}/{_name}",
+                                            thresholds=_thresholds,
+                                            from_logits=_from_logits)
 
-        if self.method == "ACC":
-            self.m = metrics.Accuracy(name=self.name)
+    def handler(self):
+        return self.metrics
 
-        if self.method == "BACC":
-            self.m = metrics.BinaryAccuracy(name=self.name,
-                                            threshold=self.threshold)
 
-        if self.method == "CACC":
-            self.m = metrics.CategoricalAccuracy(name=self.name)
+@factory.register_metrics_cls("accuracy")
+class AccuracyMetrics:
 
-        if self.method == "SCACC":
-            self.m = metrics.SparseCategoricalAccuracy(name=self.name)
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        self.metrics = tf.keras.metrics.Accuracy(name=f"{_conf_name}/{_name}")
 
-        if self.method == "TCACC":
-            self.m = metrics.TopKCategoricalAccuracy(name=self.name,
-                                                     k=self.topk)
+    def handler(self):
+        return self.metrics
 
-        if self.method == "STCACC":
-            self.m = metrics.SparseTopKCategoricalAccuracy(name=self.name,
-                                                           k=self.topk)
 
-        if self.method == "PRE":
-            self.m = metrics.Precision(name=self.name)
+@factory.register_metrics_cls("binaryaccuracy")
+class BinaryAccuracyMetrics:
 
-        if self.method == "AUC":
-            self.m = metrics.AUC(name=self.name)
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _thresholds = conf.thresholds
+        self.metrics = tf.keras.metrics.BinaryAccuracy(
+            name=f"{_conf_name}/{_name}", thresholds=_thresholds)
 
-        if self.method == "MEAN":
-            self.m = metrics.Mean(name=self.name, dtype=self.dtype)
+    def handler(self):
+        return self.metrics
 
-    def get_metrics(self):
-        return self.m
+
+@factory.register_metrics_cls("binarycrossentropy")
+class BinaryCrossentropyMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _from_logits = conf.from_logits
+        _label_smoothing = conf.label_smoothing
+        self.metrics = tf.keras.metrics.BinaryCrossentropy(
+            name=f"{_conf_name}/{_name}",
+            from_logits=_from_logits,
+            label_smoothing=_label_smoothing)
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("binaryiou")
+class BinaryIoUMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _thresholds = conf.thresholds
+        _target_class_ids = conf.target_class_ids
+        self.metrics = tf.keras.metrics.BinaryIoU(
+            name=f"{_conf_name}/{_name}",
+            thresholds=_thresholds,
+            target_class_ids=_target_class_ids)
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("categoricalaccuracy")
+class CategoricalAccuracyMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        self.metrics = tf.keras.metrics.CategoricalAccuracy(
+            name=f"{_conf_name}/{_name}")
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("categoricalhinge")
+class CategoricalHingeMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        self.metrics = tf.keras.metrics.CategoricalHinge(
+            name=f"{_conf_name}/{_name}")
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("cosinesimilarity")
+class CosineSimilarityMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        self.metrics = tf.keras.metrics.CosineSimilarity(
+            name=f"{_conf_name}/{_name}")
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("falsenegatives")
+class FalseNegativesMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _thresholds = conf.thresholds
+        self.metrics = tf.keras.metrics.FalseNegatives(
+            name=f"{_conf_name}/{_name}",
+            thresholds=_thresholds,
+        )
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("falsepositives")
+class FalsePositivesMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _thresholds = conf.thresholds
+        self.metrics = tf.keras.metrics.FalsePositives(
+            name=f"{_conf_name}/{_name}",
+            thresholds=_thresholds,
+        )
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("truenegatives")
+class TrueNegativesMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _thresholds = conf.thresholds
+        self.metrics = tf.keras.metrics.TrueNegatives(
+            name=f"{_conf_name}/{_name}",
+            thresholds=_thresholds,
+        )
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("truepositives")
+class TruePositivesMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _thresholds = conf.thresholds
+        self.metrics = tf.keras.metrics.TruePositives(
+            name=f"{_conf_name}/{_name}",
+            thresholds=_thresholds,
+        )
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("precision")
+class PrecisionMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _thresholds = conf.thresholds
+        _top_k = conf.top_k
+        _class_id = conf.class_id
+        self.metrics = tf.keras.metrics.Precision(name=f"{_conf_name}/{_name}",
+                                                  thresholds=_thresholds,
+                                                  top_k=_top_k,
+                                                  class_id=_class_id)
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("recall")
+class RecallMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _thresholds = conf.thresholds
+        _top_k = conf.top_k
+        _class_id = conf.class_id
+        self.metrics = tf.keras.metrics.Recall(name=f"{_conf_name}/{_name}",
+                                               thresholds=_thresholds,
+                                               top_k=_top_k,
+                                               class_id=_class_id)
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("precisionatrecall")
+class PrecisionAtRecallMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _num_thresholds = conf.num_thresholds
+        _recall = conf.rate
+        _class_id = conf.class_id
+        self.metrics = tf.keras.metrics.PrecisionAtRecall(
+            name=f"{_conf_name}/{_name}",
+            num_thresholds=_num_thresholds,
+            recall=_recall,
+            class_id=_class_id)
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("recallatprecision")
+class RecallAtPrecisionMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _num_thresholds = conf.num_thresholds
+        _precision = conf.rate
+        _class_id = conf.class_id
+        self.metrics = tf.keras.metrics.RecallAtPrecision(
+            name=f"{_conf_name}/{_name}",
+            num_thresholds=_num_thresholds,
+            precision=_precision,
+            class_id=_class_id)
+
+    def handler(self):
+        return self.metrics
+
+
+@factory.register_metrics_cls("topkcategoricalaccuracy")
+class TopKCategoricalAccuracyMetrics:
+
+    def __init__(self, conf: MetricOptions):
+        _conf_name = conf.conf_name
+        _name = conf.method
+        _k = conf.k
+
+        self.metrics = tf.keras.metrics.TopKCategoricalAccuracy(
+            name=f"{_conf_name}/{_name}", k=_k)
+
+    def handler(self):
+        return self.metrics

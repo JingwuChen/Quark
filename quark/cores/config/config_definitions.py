@@ -9,11 +9,16 @@ from typing import Optional, Union, List
 
 
 @dataclasses.dataclass
-class FeatuerConfig():
+class FeatureConfig():
     name: str = None
     dtype: int = 0
     len: int = None
     value_dtype: int = None
+
+
+@dataclasses.dataclass
+class PrintConfig():
+    read_num: int = 1
 
 
 @dataclasses.dataclass
@@ -25,7 +30,7 @@ class DataConfig():
     compression_type: str = None
     buffer_size: int = 100
     num_parallel_reads: int = None
-    feature_config: List[FeatuerConfig] = None
+    feature_config: List[FeatureConfig] = None
     textline_split: str = None
     # processor basic config
     global_batch_size: int = 0
@@ -41,6 +46,11 @@ class DataConfig():
     tf_data_service_address: Optional[str] = None
     tf_data_service_job_name: Optional[str] = None
     seed: Optional[int] = None
+
+
+@dataclasses.dataclass
+class ModelConfig():
+    name: str = None
 
 
 @dataclasses.dataclass

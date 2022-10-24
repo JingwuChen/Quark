@@ -7,3 +7,4 @@ from quark.cores.model.activations import *
 from quark.cores.model.layers import *
 from quark.cores.model.metrics import *
 from quark.cores.model.optimization import *
+from quark.cores.model.losses import *

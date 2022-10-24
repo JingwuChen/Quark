@@ -5,10 +5,7 @@ from __future__ import absolute_import, division, print_function
 """Layer-wise adaptive rate scaling optimizer."""
 import re
 from typing import Text, List, Optional
-
 import tensorflow as tf
-
-# pylint: disable=protected-access
 
 
 class LARS(tf.keras.optimizers.Optimizer):
