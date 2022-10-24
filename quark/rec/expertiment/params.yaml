@@ -121,31 +121,32 @@ task_dag:
       base_dir: ./savemodel
 
 model_dag:
-  - node_name: user
-    node_dtype: input
-    dag_is_input: true
-    node_input: start
-    node_config:
-      feature_name: user
-      reuse: true
-  - node_name: item
-    node_dtype: input
-    dag_is_input: true
-    node_input: start
-    node_config:
-      feature_name: item
-      reuse: true
-  - node_name: embed01
-    node_dtype: embed
-    node_input: user,item
-    node_config:
-      feature_size: 40000
-      embedding_size: 16
-  - node_name: ctr
-    node_dtype: product
-    dag_is_output: true
-    node_input: embed01
-    node_config:
-
+  - model_name: mcf
+    dag:
+      - node_name: user
+        node_dtype: input
+        dag_is_input: true
+        node_input: start
+        node_config:
+          feature_name: user
+          reuse: true
+      - node_name: item
+        node_dtype: input
+        dag_is_input: true
+        node_input: start
+        node_config:
+          feature_name: item
+          reuse: true
+      - node_name: embed01
+        node_dtype: embed
+        node_input: user,item
+        node_config:
+          feature_size: 40000
+          embedding_size: 16
+      - node_name: ctr
+        node_dtype: product
+        dag_is_output: true
+        node_input: embed01
+        node_config:
 runtime:
   

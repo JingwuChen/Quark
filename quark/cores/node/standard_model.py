@@ -109,13 +109,15 @@ class StandardModel(AbstractModel, metaclass=abc.ABCMeta):
         return self._model
 
 
-def product_StandardModelOptions(model_dag):
-    cls = StandardModel(model_dag).handler()
-    _conf_name = "mcf"
+def product_StandardModelOptions(model_dags):
+    for dag in model_dags:
+        _model_name = dag["model_name"]
+        _model_dag = dag["dag"]
+        cls = StandardModel(_model_dag).handler()
 
-    @factory.register_model_cls(_conf_name)
-    class StandardModelOptionsNode(ModelOptions):
-        conf_name = "mcf"
-        model = cls
+        @factory.register_model_cls(_model_name)
+        class StandardModelOptionsNode(ModelOptions):
+            conf_name = _model_name
+            model = cls
 
-    logging.info(f"\nregister_model_cls: {_conf_name} is success\n")
+        logging.info(f"\nregister_model_cls: {_model_name} is success\n")
